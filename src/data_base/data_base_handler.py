@@ -10,7 +10,7 @@ import os
 
 import aiosqlite
 
-from sdk.send_telegram_message import send_telegram_message_update
+from src.handlers.send_telegram_message import send_telegram_message_update
 
 logger = logging.getLogger(__name__)
 logger.info("Data Base handler started")
@@ -24,7 +24,7 @@ class DataBaseHandler:
     # pylint: disable=too-many-arguments, too-many-positional-arguments
     def __init__(
         self,
-        articles_db_path="./articles.db",
+        articles_db_path="./data_bases/articles.db",
         daily_stats_db_path="./data_bases/daily_stats.db",
         fear_greed_db_path="./data_bases/fear_greed.db",
         eth_gas_fee_db_path="./data_bases/eth_gas_fee.db",
@@ -41,6 +41,11 @@ class DataBaseHandler:
         Creates the 'articles' table only if the DB file doesn't exist yet.
         If the file already exists, we assume the table was previously created.
         """
+        folder_path = os.path.dirname(self.articles_db_path)
+
+        if folder_path != "":
+            os.makedirs(folder_path, exist_ok=True)
+
         db_file_exists = os.path.exists(self.articles_db_path)
 
         logger.info("Creating the data base...")
